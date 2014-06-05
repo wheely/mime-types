@@ -59,40 +59,8 @@ namespace :benchmark do
   end
 
   task :type_for, [ :repeated ] => :support do |t, args|
-    repeats = args.repeats.to_i
-    repeats = 5000 if repeats <= 0
-
-    require 'mime/types'
-
-    extensions = MIME::Types.send(:__types__).
-      instance_variable_get(:@extension_index).keys
-
-    require 'benchmark'
-    Benchmark.bm(17) do |mark|
-      mark.report("Normal:") {
-        repeats.times { extensions.each { |ext| MIME::Types.type_for(ext) } }
-      }
-
-      class MIME::Types
-        def type_for(filename, platform = false)
-          types = Array(filename).flat_map { |fn|
-            @extension_index[fn.chomp.downcase.split(/\./o).last]
-          }.compact.sort { |a, b| a.priority_compare(b) }.uniq
-
-          if platform
-            MIME.deprecated(self, __method__,
-                            "using the platform parameter")
-            types.select(&:platform?)
-          else
-            types
-          end
-        end
-      end
-
-      mark.report("Split:") {
-        repeats.times { extensions.each { |ext| MIME::Types.type_for(ext) } }
-      }
-    end
+    require 'benchmarks/type_for'
+    Benchmarks::TypeFor.report(args.repeats)
   end
 end
 
