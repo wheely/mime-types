@@ -1,5 +1,5 @@
 text/1d-interleaved-parityfec 'IANA,RFC6015
-text/calendar 'IANA,RFC5545
+text/calendar @ics 'IANA,RFC5545
 text/css @css :8bit 'IANA,RFC2318
 text/csv @csv :8bit 'IANA,RFC4180
 text/dns 'IANA,RFC4027
